@@ -1,13 +1,29 @@
 [
   {
     "tipo": "carro",
+    "nome": "Mercedes-AMG CLA",
+    "ano": "",
+    "potencia": "",
+    "zeroACem": "",
+    "categoria": "Sedã Esportivo",
+    "preco": "Consulte",
+    "foto": "fotos/mercedes-amg-cla.jpeg",
+    "video": "",
+    "publicado": true,
+    "notaInterna": ""
+  },
+  {
+    "tipo": "carro",
     "nome": "Mustang GT",
     "ano": "2021",
     "potencia": "460 cv",
     "zeroACem": "4.3s",
     "categoria": "Esportivo V8",
     "preco": "Consulte",
-    "foto": ""
+    "foto": "",
+    "video": "",
+    "publicado": true,
+    "notaInterna": ""
   },
   {
     "tipo": "carro",
@@ -17,7 +33,10 @@
     "zeroACem": "5.4s",
     "categoria": "Hot Hatch",
     "preco": "Consulte",
-    "foto": ""
+    "foto": "",
+    "video": "",
+    "publicado": true,
+    "notaInterna": ""
   },
   {
     "tipo": "moto",
@@ -27,7 +46,10 @@
     "zeroACem": "2.9s",
     "categoria": "Superesportiva",
     "preco": "Consulte",
-    "foto": ""
+    "foto": "",
+    "video": "",
+    "publicado": true,
+    "notaInterna": ""
   },
   {
     "tipo": "moto",
@@ -37,7 +59,10 @@
     "zeroACem": "2.6s",
     "categoria": "Superesportiva",
     "preco": "Consulte",
-    "foto": ""
+    "foto": "",
+    "video": "",
+    "publicado": true,
+    "notaInterna": ""
   },
   {
     "tipo": "carro",
@@ -47,7 +72,10 @@
     "zeroACem": "3.5s",
     "categoria": "Sedã Esportivo",
     "preco": "Consulte",
-    "foto": ""
+    "foto": "",
+    "video": "",
+    "publicado": true,
+    "notaInterna": ""
   },
   {
     "tipo": "moto",
@@ -57,6 +85,9 @@
     "zeroACem": "3.0s",
     "categoria": "Superesportiva",
     "preco": "Consulte",
-    "foto": ""
+    "foto": "",
+    "video": "",
+    "publicado": true,
+    "notaInterna": ""
   }
 ]
