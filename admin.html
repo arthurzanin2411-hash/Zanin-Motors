@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel · Zanin Motors</title>
+
+<!--
+  ======================================================================
+  COMO FUNCIONA ESTE PAINEL
+  ======================================================================
+  Este site é um arquivo estático (sem servidor/banco de dados), então
+  o painel funciona assim:
+
+  1. Você entra aqui, cadastra/edita/apaga veículos no formulário abaixo.
+  2. Cada alteração fica salva automaticamente no seu navegador (rascunho),
+     então se você fechar a aba sem terminar, nada se perde.
+  3. Quando terminar, clique em "Baixar vehicles.json atualizado".
+  4. Envie esse arquivo baixado para a sua hospedagem, substituindo o
+     "vehicles.json" antigo (mesmo processo de quando você atualiza o
+     site: arrastar a pasta de novo no Netlify, ou subir por FTP).
+
+  Só depois do passo 4 os visitantes do site vejam as mudanças — o
+  formulário sozinho só atualiza o que aparece no SEU navegador.
+
+  TROQUE A SENHA abaixo antes de publicar o site (linha "SENHA_ADMIN").
+  Atenção: por ser um site sem servidor, essa senha é apenas para evitar
+  acesso casual — não é uma proteção forte. Não cadastre nada sigiloso.
+  ======================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0e0e0c; --panel:#17160f; --panel-2:#1c1a13; --line:#2e2c22;
+    --paper:#f4efe2; --paper-dim:#a39c8a; --red:#a3272b; --red-soft:#6e1b1c; --red-bright:#c8393c;
+    --danger:#b5543f;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:var(--bg); color:var(--paper); font-family:'Inter',sans-serif; line-height:1.5; }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:500; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  .wrap{ max-width:840px; margin:0 auto; padding:60px 24px 100px; }
+  input, select{
+    width:100%; background:var(--panel); border:1px solid var(--line); color:var(--paper);
+    padding:12px 14px; font-family:'Inter',sans-serif; font-size:0.95rem;
+  }
+  input:focus, select:focus{ outline:1px solid var(--red); border-color:var(--red); }
+  label{ display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--paper-dim); margin-bottom:6px; }
+  .field{ margin-bottom:18px; }
+  .btn{ font-size:0.82rem; text-transform:uppercase; letter-spacing:0.08em; padding:13px 24px; border:none; cursor:pointer; transition:all .2s; }
+  .btn-primary{ background:var(--red); color:var(--paper); }
+  .btn-primary:hover{ background:var(--red-bright); }
+  .btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--paper); }
+  .btn-ghost:hover{ border-color:var(--red-soft); }
+  .btn-danger{ background:transparent; border:1px solid var(--danger); color:var(--danger); }
+  .btn-danger:hover{ background:rgba(181,84,63,0.1); }
+
+  /* Login */
+  #login-screen{ max-width:380px; margin:120px auto; text-align:center; }
+  #login-screen h1{ font-size:1.6rem; margin-bottom:10px; }
+  #login-screen p{ color:var(--paper-dim); font-size:0.9rem; margin-bottom:28px; }
+  #login-error{ color:var(--danger); font-size:0.85rem; margin-top:12px; display:none; }
+
+  /* Admin */
+  #admin-screen{ display:none; }
+  .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .top h1{ font-size:1.5rem; }
+  .subtitle{ color:var(--paper-dim); font-size:0.9rem; margin-bottom:36px; }
+  .notice{
+    border:1px solid var(--red-soft); background:rgba(163,39,43,0.06); padding:16px 18px;
+    font-size:0.85rem; color:var(--paper-dim); margin-bottom:36px;
+  }
+  .notice b{ color:var(--red-bright); }
+
+  .form-card{ background:var(--panel); border:1px solid var(--line); padding:28px; margin-bottom:44px; }
+  .form-card h2{ font-size:1.1rem; margin-bottom:20px; }
+  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:0 18px; }
+  .form-actions{ display:flex; gap:12px; margin-top:8px; }
+
+  .list-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+  .list-head h2{ font-size:1.1rem; }
+  .count{ color:var(--paper-dim); font-size:0.85rem; }
+
+  .vitem{
+    display:flex; justify-content:space-between; align-items:center;
+    border:1px solid var(--line); padding:16px 18px; margin-bottom:10px; background:var(--panel);
+  }
+  .vitem-info{ display:flex; flex-direction:column; gap:4px; }
+  .vitem-info .n{ font-family:'Fraunces',serif; font-size:1.05rem; }
+  .vitem-info .m{ color:var(--paper-dim); font-size:0.8rem; }
+  .vitem-actions{ display:flex; gap:8px; }
+  .vitem-actions button{ font-size:0.75rem; padding:8px 14px; text-transform:uppercase; letter-spacing:0.06em; }
+
+  .export-bar{
+    position:sticky; bottom:0; margin-top:44px; padding:20px 24px; background:var(--panel-2);
+    border:1px solid var(--red-soft); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+  }
+  .export-bar p{ font-size:0.85rem; color:var(--paper-dim); max-width:420px; }
+
+  @media (max-width:640px){ .grid-2{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <h1>Painel Zanin Motors</h1>
+  <p>Digite a senha para gerenciar os veículos do site.</p>
+  <div class="field"><input type="password" id="senha-input" placeholder="Senha"></div>
+  <button class="btn btn-primary" style="width:100%;" onclick="tentarLogin()">Entrar</button>
+  <p id="login-error">Senha incorreta.</p>
+</div>
+
+<div id="admin-screen">
+  <div class="wrap">
+    <div class="top">
+      <h1>Veículos</h1>
+      <button class="btn btn-ghost" onclick="sair()">Sair</button>
+    </div>
+    <p class="subtitle">Cadastre, edite ou remova os veículos exibidos no site.</p>
+
+    <div class="notice">
+      <b>Importante:</b> as alterações aqui ficam salvas só neste navegador enquanto você trabalha.
+      Para os visitantes do site verem as mudanças, clique em "Baixar vehicles.json atualizado"
+      no final da página e envie o arquivo para a sua hospedagem, substituindo o antigo.
+    </div>
+
+    <div class="form-card">
+      <h2 id="form-title">Adicionar veículo</h2>
+      <input type="hidden" id="edit-index" value="-1">
+      <div class="grid-2">
+        <div class="field"><label>Tipo</label>
+          <select id="f-tipo"><option value="carro">Carro</option><option value="moto">Moto</option></select>
+        </div>
+        <div class="field"><label>Ano</label><input id="f-ano" placeholder="2023"></div>
+      </div>
+      <div class="field"><label>Nome do modelo</label><input id="f-nome" placeholder="Ex: Mustang GT"></div>
+      <div class="grid-2">
+        <div class="field"><label>Potência</label><input id="f-potencia" placeholder="460 cv"></div>
+        <div class="field"><label>0–100 km/h</label><input id="f-zero" placeholder="4.3s"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Categoria</label><input id="f-categoria" placeholder="Esportivo V8"></div>
+        <div class="field"><label>Valor</label><input id="f-preco" placeholder="Consulte ou R$ 389.900"></div>
+      </div>
+      <div class="field"><label>Foto (link ou caminho — opcional)</label><input id="f-foto" placeholder="fotos/mustang.jpg"></div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="salvarVeiculo()">Salvar veículo</button>
+        <button class="btn btn-ghost" id="cancel-edit" style="display:none;" onclick="cancelarEdicao()">Cancelar edição</button>
+      </div>
+    </div>
+
+    <div class="list-head">
+      <h2>Estoque atual</h2>
+      <span class="count" id="lista-count"></span>
+    </div>
+    <div id="lista-veiculos"></div>
+
+    <div class="export-bar">
+      <p>Terminou os cadastros? Baixe o arquivo e envie para a hospedagem para publicar as mudanças.</p>
+      <button class="btn btn-primary" onclick="baixarJSON()">Baixar vehicles.json atualizado</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SENHA_ADMIN = "zanin2026"; // <-- troque esta senha antes de publicar
+  const STORAGE_KEY = "zanin_motors_veiculos_draft";
+
+  let veiculos = [];
+
+  function tentarLogin(){
+    const val = document.getElementById("senha-input").value;
+    if(val === SENHA_ADMIN){
+      sessionStorage.setItem("zanin_admin_ok", "1");
+      mostrarAdmin();
+    } else {
+      document.getElementById("login-error").style.display = "block";
+    }
+  }
+  document.getElementById("senha-input").addEventListener("keydown", e=>{ if(e.key==="Enter") tentarLogin(); });
+
+  function sair(){
+    sessionStorage.removeItem("zanin_admin_ok");
+    location.reload();
+  }
+
+  function mostrarAdmin(){
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("admin-screen").style.display = "block";
+    carregarVeiculos();
+  }
+
+  // Carrega: primeiro tenta rascunho salvo no navegador, senão busca vehicles.json
+  function carregarVeiculos(){
+    const draft = localStorage.getItem(STORAGE_KEY);
+    if(draft){
+      veiculos = JSON.parse(draft);
+      renderLista();
+      return;
+    }
+    fetch("vehicles.json")
+      .then(r => r.json())
+      .then(data => { veiculos = data; renderLista(); })
+      .catch(() => { veiculos = []; renderLista(); });
+  }
+
+  function salvarRascunho(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(veiculos));
+  }
+
+  function renderLista(){
+    const lista = document.getElementById("lista-veiculos");
+    document.getElementById("lista-count").textContent = veiculos.length + (veiculos.length===1 ? " veículo" : " veículos");
+    if(veiculos.length === 0){
+      lista.innerHTML = `<p style="color:var(--paper-dim); font-size:0.9rem;">Nenhum veículo cadastrado ainda.</p>`;
+      return;
+    }
+    lista.innerHTML = veiculos.map((v,i)=>`
+      <div class="vitem">
+        <div class="vitem-info">
+          <span class="n">${v.nome} <span style="color:var(--paper-dim); font-size:0.8rem;">· ${v.ano}</span></span>
+          <span class="m mono">${v.tipo === "moto" ? "Moto" : "Carro"} · ${v.potencia} · ${v.zeroACem} · ${v.preco}</span>
+        </div>
+        <div class="vitem-actions">
+          <button class="btn btn-ghost" onclick="editarVeiculo(${i})">Editar</button>
+          <button class="btn btn-danger" onclick="removerVeiculo(${i})">Remover</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function limparForm(){
+    ["f-nome","f-ano","f-potencia","f-zero","f-categoria","f-preco","f-foto"].forEach(id=>document.getElementById(id).value = "");
+    document.getElementById("f-tipo").value = "carro";
+    document.getElementById("edit-index").value = "-1";
+    document.getElementById("form-title").textContent = "Adicionar veículo";
+    document.getElementById("cancel-edit").style.display = "none";
+  }
+
+  function salvarVeiculo(){
+    const nome = document.getElementById("f-nome").value.trim();
+    if(!nome){ alert("Preencha ao menos o nome do modelo."); return; }
+
+    const v = {
+      tipo: document.getElementById("f-tipo").value,
+      nome: nome,
+      ano: document.getElementById("f-ano").value.trim(),
+      potencia: document.getElementById("f-potencia").value.trim(),
+      zeroACem: document.getElementById("f-zero").value.trim(),
+      categoria: document.getElementById("f-categoria").value.trim(),
+      preco: document.getElementById("f-preco").value.trim() || "Consulte",
+      foto: document.getElementById("f-foto").value.trim()
+    };
+
+    const idx = parseInt(document.getElementById("edit-index").value, 10);
+    if(idx >= 0){ veiculos[idx] = v; } else { veiculos.push(v); }
+
+    salvarRascunho();
+    renderLista();
+    limparForm();
+  }
+
+  function editarVeiculo(i){
+    const v = veiculos[i];
+    document.getElementById("f-tipo").value = v.tipo;
+    document.getElementById("f-nome").value = v.nome;
+    document.getElementById("f-ano").value = v.ano;
+    document.getElementById("f-potencia").value = v.potencia;
+    document.getElementById("f-zero").value = v.zeroACem;
+    document.getElementById("f-categoria").value = v.categoria;
+    document.getElementById("f-preco").value = v.preco;
+    document.getElementById("f-foto").value = v.foto;
+    document.getElementById("edit-index").value = i;
+    document.getElementById("form-title").textContent = "Editar veículo";
+    document.getElementById("cancel-edit").style.display = "inline-block";
+    window.scrollTo({ top:0, behavior:"smooth" });
+  }
+
+  function cancelarEdicao(){ limparForm(); }
+
+  function removerVeiculo(i){
+    if(!confirm(`Remover "${veiculos[i].nome}" da lista?`)) return;
+    veiculos.splice(i,1);
+    salvarRascunho();
+    renderLista();
+  }
+
+  function baixarJSON(){
+    const blob = new Blob([JSON.stringify(veiculos, null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "vehicles.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Mantém login na sessão do navegador (some ao fechar a aba)
+  if(sessionStorage.getItem("zanin_admin_ok") === "1"){ mostrarAdmin(); }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+[
+  {
+    "tipo": "carro",
+    "nome": "Mustang GT",
+    "ano": "2021",
+    "potencia": "460 cv",
+    "zeroACem": "4.3s",
+    "categoria": "Esportivo V8",
+    "preco": "Consulte",
+    "foto": ""
+  },
+  {
+    "tipo": "carro",
+    "nome": "Civic Type R",
+    "ano": "2022",
+    "potencia": "320 cv",
+    "zeroACem": "5.4s",
+    "categoria": "Hot Hatch",
+    "preco": "Consulte",
+    "foto": ""
+  },
+  {
+    "tipo": "moto",
+    "nome": "CBR 1000RR-R",
+    "ano": "2023",
+    "potencia": "217 cv",
+    "zeroACem": "2.9s",
+    "categoria": "Superesportiva",
+    "preco": "Consulte",
+    "foto": ""
+  },
+  {
+    "tipo": "moto",
+    "nome": "Ducati Panigale V4",
+    "ano": "2022",
+    "potencia": "214 cv",
+    "zeroACem": "2.6s",
+    "categoria": "Superesportiva",
+    "preco": "Consulte",
+    "foto": ""
+  },
+  {
+    "tipo": "carro",
+    "nome": "BMW M3 Competition",
+    "ano": "2023",
+    "potencia": "510 cv",
+    "zeroACem": "3.5s",
+    "categoria": "Sedã Esportivo",
+    "preco": "Consulte",
+    "foto": ""
+  },
+  {
+    "tipo": "moto",
+    "nome": "Kawasaki ZX-10R",
+    "ano": "2021",
+    "potencia": "203 cv",
+    "zeroACem": "3.0s",
+    "categoria": "Superesportiva",
+    "preco": "Consulte",
+    "foto": ""
+  }
+]
