@@ -3,304 +3,301 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel · Zanin Motors</title>
-
-<!--
-  ======================================================================
-  COMO FUNCIONA ESTE PAINEL
-  ======================================================================
-  Este site é um arquivo estático (sem servidor/banco de dados), então
-  o painel funciona assim:
-
-  1. Você entra aqui, cadastra/edita/apaga veículos no formulário abaixo.
-  2. Cada alteração fica salva automaticamente no seu navegador (rascunho),
-     então se você fechar a aba sem terminar, nada se perde.
-  3. Quando terminar, clique em "Baixar vehicles.json atualizado".
-  4. Envie esse arquivo baixado para a sua hospedagem, substituindo o
-     "vehicles.json" antigo (mesmo processo de quando você atualiza o
-     site: arrastar a pasta de novo no Netlify, ou subir por FTP).
-
-  Só depois do passo 4 os visitantes do site vejam as mudanças — o
-  formulário sozinho só atualiza o que aparece no SEU navegador.
-
-  TROQUE A SENHA abaixo antes de publicar o site (linha "SENHA_ADMIN").
-  Atenção: por ser um site sem servidor, essa senha é apenas para evitar
-  acesso casual — não é uma proteção forte. Não cadastre nada sigiloso.
-  ======================================================================
--->
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+<title>ZANIN MOTORS — Painel Administrativo</title>
 <style>
   :root{
-    --bg:#0e0e0c; --panel:#17160f; --panel-2:#1c1a13; --line:#2e2c22;
-    --paper:#f4efe2; --paper-dim:#a39c8a; --red:#a3272b; --red-soft:#6e1b1c; --red-bright:#c8393c;
-    --danger:#b5543f;
+    --bg:#0a0a0b;--bg-soft:#121214;--card:#161618;--line:#26262a;
+    --ivory:#f4efe6;--ivory-dim:#a9a49b;--red:#c8102e;--red-soft:#e23b52;
+    --green:#2fbf71;--radius:12px;
+    --font:'Helvetica Neue',Arial,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   }
-  *{ box-sizing:border-box; margin:0; padding:0; }
-  body{ background:var(--bg); color:var(--paper); font-family:'Inter',sans-serif; line-height:1.5; }
-  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:500; }
-  .mono{ font-family:'JetBrains Mono', monospace; }
-  .wrap{ max-width:840px; margin:0 auto; padding:60px 24px 100px; }
-  input, select{
-    width:100%; background:var(--panel); border:1px solid var(--line); color:var(--paper);
-    padding:12px 14px; font-family:'Inter',sans-serif; font-size:0.95rem;
-  }
-  input:focus, select:focus{ outline:1px solid var(--red); border-color:var(--red); }
-  label{ display:block; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--paper-dim); margin-bottom:6px; }
-  .field{ margin-bottom:18px; }
-  .btn{ font-size:0.82rem; text-transform:uppercase; letter-spacing:0.08em; padding:13px 24px; border:none; cursor:pointer; transition:all .2s; }
-  .btn-primary{ background:var(--red); color:var(--paper); }
-  .btn-primary:hover{ background:var(--red-bright); }
-  .btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--paper); }
-  .btn-ghost:hover{ border-color:var(--red-soft); }
-  .btn-danger{ background:transparent; border:1px solid var(--danger); color:var(--danger); }
-  .btn-danger:hover{ background:rgba(181,84,63,0.1); }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ivory);font-family:var(--font);line-height:1.5}
+  a{color:var(--red-soft);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  input,select,textarea,button{font-family:inherit}
 
   /* Login */
-  #login-screen{ max-width:380px; margin:120px auto; text-align:center; }
-  #login-screen h1{ font-size:1.6rem; margin-bottom:10px; }
-  #login-screen p{ color:var(--paper-dim); font-size:0.9rem; margin-bottom:28px; }
-  #login-error{ color:var(--danger); font-size:0.85rem; margin-top:12px; display:none; }
+  .login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .login-box{background:var(--bg-soft);border:1px solid var(--line);border-radius:18px;padding:40px;max-width:380px;width:100%;text-align:center}
+  .login-box .logo{font-weight:800;letter-spacing:.2em;font-size:1.2rem;margin-bottom:6px}
+  .login-box .logo span{color:var(--red)}
+  .login-box p{color:var(--ivory-dim);font-size:.85rem;margin-bottom:26px}
+  .field{text-align:left;margin-bottom:16px}
+  .field label{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ivory-dim);margin-bottom:7px}
+  .field input,.field select,.field textarea{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ivory);padding:11px 13px;border-radius:9px;font-size:.9rem;outline:none;transition:border-color .2s}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red)}
+  .field textarea{min-height:74px;resize:vertical}
+  .btn{background:var(--red);color:#fff;border:none;padding:12px 20px;border-radius:100px;font-size:.85rem;font-weight:600;letter-spacing:.03em;cursor:pointer;transition:background .2s,transform .2s}
+  .btn:hover{background:var(--red-soft);transform:translateY(-1px)}
+  .btn.full{width:100%}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ivory)}
+  .btn.ghost:hover{background:var(--card);border-color:var(--ivory)}
+  .btn.green{background:var(--green)}
+  .btn.green:hover{background:#38d181}
+  .btn.mini{padding:7px 14px;font-size:.75rem}
+  .err{color:var(--red-soft);font-size:.8rem;margin-top:12px;min-height:1em}
 
-  /* Admin */
-  #admin-screen{ display:none; }
-  .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-  .top h1{ font-size:1.5rem; }
-  .subtitle{ color:var(--paper-dim); font-size:0.9rem; margin-bottom:36px; }
-  .notice{
-    border:1px solid var(--red-soft); background:rgba(163,39,43,0.06); padding:16px 18px;
-    font-size:0.85rem; color:var(--paper-dim); margin-bottom:36px;
-  }
-  .notice b{ color:var(--red-bright); }
+  /* App */
+  #app{display:none}
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(10,10,11,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar .row{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .topbar .logo{font-weight:800;letter-spacing:.18em}
+  .topbar .logo span{color:var(--red)}
+  .topbar .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .hint{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:10px;padding:14px 16px;color:var(--ivory-dim);font-size:.82rem;margin:24px 0}
+  .hint b{color:var(--ivory)}
+  .grid-admin{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:40px}
 
-  .form-card{ background:var(--panel); border:1px solid var(--line); padding:28px; margin-bottom:44px; }
-  .form-card h2{ font-size:1.1rem; margin-bottom:20px; }
-  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:0 18px; }
-  .form-actions{ display:flex; gap:12px; margin-top:8px; }
+  .item{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .item .thumb{width:70px;height:52px;border-radius:8px;background:linear-gradient(135deg,#1c1c1f,#0e0e10);object-fit:cover;flex-shrink:0}
+  .item .info{flex:1;min-width:180px}
+  .item .info .b{color:var(--ivory-dim);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase}
+  .item .info h3{font-size:1rem;font-weight:700}
+  .item .info .meta{color:var(--ivory-dim);font-size:.8rem;margin-top:2px}
+  .item .price{font-weight:800;font-size:1.05rem;margin-right:6px}
+  .tag{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:100px;border:1px solid var(--line);color:var(--ivory-dim)}
+  .tag.d{background:var(--red);color:#fff;border-color:var(--red)}
 
-  .list-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
-  .list-head h2{ font-size:1.1rem; }
-  .count{ color:var(--paper-dim); font-size:0.85rem; }
-
-  .vitem{
-    display:flex; justify-content:space-between; align-items:center;
-    border:1px solid var(--line); padding:16px 18px; margin-bottom:10px; background:var(--panel);
-  }
-  .vitem-info{ display:flex; flex-direction:column; gap:4px; }
-  .vitem-info .n{ font-family:'Fraunces',serif; font-size:1.05rem; }
-  .vitem-info .m{ color:var(--paper-dim); font-size:0.8rem; }
-  .vitem-actions{ display:flex; gap:8px; }
-  .vitem-actions button{ font-size:0.75rem; padding:8px 14px; text-transform:uppercase; letter-spacing:0.06em; }
-
-  .export-bar{
-    position:sticky; bottom:0; margin-top:44px; padding:20px 24px; background:var(--panel-2);
-    border:1px solid var(--red-soft); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
-  }
-  .export-bar p{ font-size:0.85rem; color:var(--paper-dim); max-width:420px; }
-
-  @media (max-width:640px){ .grid-2{ grid-template-columns:1fr; } }
+  /* Modal form */
+  .modal{position:fixed;inset:0;z-index:60;display:none;align-items:flex-start;justify-content:center;padding:24px;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);overflow:auto}
+  .modal.open{display:flex}
+  .modal-box{background:var(--bg-soft);border:1px solid var(--line);border-radius:16px;max-width:600px;width:100%;padding:28px;margin:auto}
+  .modal-box h2{font-size:1.3rem;margin-bottom:20px}
+  .form-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-row{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+  .switch{display:flex;align-items:center;gap:10px;margin-top:6px}
+  .switch input{width:auto}
+  .empty{text-align:center;color:var(--ivory-dim);padding:50px 0;border:1px dashed var(--line);border-radius:12px}
+  @media(max-width:620px){.form-2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<div id="login-screen">
-  <h1>Painel Zanin Motors</h1>
-  <p>Digite a senha para gerenciar os veículos do site.</p>
-  <div class="field"><input type="password" id="senha-input" placeholder="Senha"></div>
-  <button class="btn btn-primary" style="width:100%;" onclick="tentarLogin()">Entrar</button>
-  <p id="login-error">Senha incorreta.</p>
+<!-- ===== LOGIN ===== -->
+<div class="login" id="login">
+  <div class="login-box">
+    <div class="logo">ZANIN<span>.</span>MOTORS</div>
+    <p>Painel administrativo</p>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="senha" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')entrar()">
+    </div>
+    <button class="btn full" onclick="entrar()">Entrar</button>
+    <div class="err" id="loginErr"></div>
+  </div>
 </div>
 
-<div id="admin-screen">
+<!-- ===== APP ===== -->
+<div id="app">
+  <div class="topbar">
+    <div class="wrap row">
+      <div class="logo">ZANIN<span>.</span>MOTORS · Admin</div>
+      <div class="actions">
+        <button class="btn ghost mini" onclick="importarJson()">Importar vehicles.json</button>
+        <button class="btn green mini" onclick="exportar()">Baixar vehicles.json</button>
+        <button class="btn mini" onclick="novo()">+ Novo veículo</button>
+        <a href="index.html" class="btn ghost mini" style="display:inline-block">Ver site</a>
+        <button class="btn ghost mini" onclick="sair()">Sair</button>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
-    <div class="top">
-      <h1>Veículos</h1>
-      <button class="btn btn-ghost" onclick="sair()">Sair</button>
+    <div class="hint">
+      <b>Como funciona:</b> as alterações ficam salvas neste navegador e já aparecem no site ao testar localmente.
+      Para publicar de verdade, clique em <b>Baixar vehicles.json</b> e substitua o arquivo no seu servidor/hospedagem.
     </div>
-    <p class="subtitle">Cadastre, edite ou remova os veículos exibidos no site.</p>
+    <div class="grid-admin" id="lista"></div>
+    <div class="empty" id="vazio" style="display:none">Nenhum veículo cadastrado. Clique em “+ Novo veículo”.</div>
+  </div>
+</div>
 
-    <div class="notice">
-      <b>Importante:</b> as alterações aqui ficam salvas só neste navegador enquanto você trabalha.
-      Para os visitantes do site verem as mudanças, clique em "Baixar vehicles.json atualizado"
-      no final da página e envie o arquivo para a sua hospedagem, substituindo o antigo.
+<!-- ===== MODAL FORM ===== -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2 id="formTitle">Novo veículo</h2>
+    <input type="hidden" id="f_id">
+    <div class="form-2">
+      <div class="field"><label>Tipo</label>
+        <select id="f_tipo"><option value="carro">Carro</option><option value="moto">Moto</option></select>
+      </div>
+      <div class="field"><label>Marca</label><input id="f_marca" placeholder="Ex.: Porsche"></div>
+      <div class="field"><label>Modelo</label><input id="f_modelo" placeholder="Ex.: 911 Carrera S"></div>
+      <div class="field"><label>Ano</label><input id="f_ano" type="number" placeholder="2022"></div>
+      <div class="field"><label>Preço (R$)</label><input id="f_preco" type="number" placeholder="890000"></div>
+      <div class="field"><label>Km</label><input id="f_km" type="number" placeholder="12000"></div>
+      <div class="field"><label>Câmbio</label><input id="f_cambio" placeholder="Automático"></div>
+      <div class="field"><label>Combustível</label><input id="f_combustivel" placeholder="Gasolina"></div>
+      <div class="field"><label>Cor</label><input id="f_cor" placeholder="Preto"></div>
+      <div class="field"><label>Imagem (caminho ou URL)</label><input id="f_imagem" placeholder="images/porsche-911.jpg"></div>
     </div>
-
-    <div class="form-card">
-      <h2 id="form-title">Adicionar veículo</h2>
-      <input type="hidden" id="edit-index" value="-1">
-      <div class="grid-2">
-        <div class="field"><label>Tipo</label>
-          <select id="f-tipo"><option value="carro">Carro</option><option value="moto">Moto</option></select>
-        </div>
-        <div class="field"><label>Ano</label><input id="f-ano" placeholder="2023"></div>
-      </div>
-      <div class="field"><label>Nome do modelo</label><input id="f-nome" placeholder="Ex: Mustang GT"></div>
-      <div class="grid-2">
-        <div class="field"><label>Potência</label><input id="f-potencia" placeholder="460 cv"></div>
-        <div class="field"><label>0–100 km/h</label><input id="f-zero" placeholder="4.3s"></div>
-      </div>
-      <div class="grid-2">
-        <div class="field"><label>Categoria</label><input id="f-categoria" placeholder="Esportivo V8"></div>
-        <div class="field"><label>Valor</label><input id="f-preco" placeholder="Consulte ou R$ 389.900"></div>
-      </div>
-      <div class="field"><label>Foto (link ou caminho — opcional)</label><input id="f-foto" placeholder="fotos/mustang.jpg"></div>
-      <div class="form-actions">
-        <button class="btn btn-primary" onclick="salvarVeiculo()">Salvar veículo</button>
-        <button class="btn btn-ghost" id="cancel-edit" style="display:none;" onclick="cancelarEdicao()">Cancelar edição</button>
-      </div>
-    </div>
-
-    <div class="list-head">
-      <h2>Estoque atual</h2>
-      <span class="count" id="lista-count"></span>
-    </div>
-    <div id="lista-veiculos"></div>
-
-    <div class="export-bar">
-      <p>Terminou os cadastros? Baixe o arquivo e envie para a hospedagem para publicar as mudanças.</p>
-      <button class="btn btn-primary" onclick="baixarJSON()">Baixar vehicles.json atualizado</button>
+    <div class="field"><label>Descrição</label><textarea id="f_descricao" placeholder="Detalhes do veículo…"></textarea></div>
+    <div class="field switch"><input type="checkbox" id="f_destaque"><label style="margin:0;text-transform:none;letter-spacing:0;font-size:.9rem;color:var(--ivory)">Marcar como destaque</label></div>
+    <div class="form-row">
+      <button class="btn ghost" onclick="fecharForm()">Cancelar</button>
+      <button class="btn" onclick="salvar()">Salvar veículo</button>
     </div>
   </div>
 </div>
 
+<input type="file" id="fileInput" accept="application/json" style="display:none">
+
 <script>
-  const SENHA_ADMIN = "zanin2026"; // <-- troque esta senha antes de publicar
-  const STORAGE_KEY = "zanin_motors_veiculos_draft";
+/* =======================================================
+   EDITAR: senha do painel (segurança simples, só front-end)
+   ======================================================= */
+const SENHA_ADMIN = "zanin2024"; // EDITAR
+const CHAVE = "zanin_veiculos";
+const SESSAO = "zanin_admin_ok";
 
-  let veiculos = [];
+let veiculos = [];
 
-  function tentarLogin(){
-    const val = document.getElementById("senha-input").value;
-    if(val === SENHA_ADMIN){
-      sessionStorage.setItem("zanin_admin_ok", "1");
-      mostrarAdmin();
-    } else {
-      document.getElementById("login-error").style.display = "block";
-    }
+const fmtPreco = v => "R$ " + Number(v).toLocaleString("pt-BR");
+const fmtKm = v => Number(v).toLocaleString("pt-BR") + " km";
+
+function entrar(){
+  const s = document.getElementById("senha").value;
+  if(s === SENHA_ADMIN){
+    sessionStorage.setItem(SESSAO,"1");
+    abrirApp();
+  }else{
+    document.getElementById("loginErr").textContent = "Senha incorreta.";
   }
-  document.getElementById("senha-input").addEventListener("keydown", e=>{ if(e.key==="Enter") tentarLogin(); });
+}
+function sair(){ sessionStorage.removeItem(SESSAO); location.reload(); }
 
-  function sair(){
-    sessionStorage.removeItem("zanin_admin_ok");
-    location.reload();
+function abrirApp(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("app").style.display="block";
+  carregar();
+}
+
+async function carregar(){
+  const local = localStorage.getItem(CHAVE);
+  if(local){
+    try{ veiculos = JSON.parse(local); return render(); }catch(e){}
   }
+  try{
+    const r = await fetch("vehicles.json");
+    const data = await r.json();
+    veiculos = data.veiculos || [];
+  }catch(e){ veiculos = []; }
+  render();
+}
 
-  function mostrarAdmin(){
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("admin-screen").style.display = "block";
-    carregarVeiculos();
-  }
+function persistir(){ localStorage.setItem(CHAVE, JSON.stringify(veiculos)); }
 
-  // Carrega: primeiro tenta rascunho salvo no navegador, senão busca vehicles.json
-  function carregarVeiculos(){
-    const draft = localStorage.getItem(STORAGE_KEY);
-    if(draft){
-      veiculos = JSON.parse(draft);
-      renderLista();
-      return;
-    }
-    fetch("vehicles.json")
-      .then(r => r.json())
-      .then(data => { veiculos = data; renderLista(); })
-      .catch(() => { veiculos = []; renderLista(); });
-  }
-
-  function salvarRascunho(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(veiculos));
-  }
-
-  function renderLista(){
-    const lista = document.getElementById("lista-veiculos");
-    document.getElementById("lista-count").textContent = veiculos.length + (veiculos.length===1 ? " veículo" : " veículos");
-    if(veiculos.length === 0){
-      lista.innerHTML = `<p style="color:var(--paper-dim); font-size:0.9rem;">Nenhum veículo cadastrado ainda.</p>`;
-      return;
-    }
-    lista.innerHTML = veiculos.map((v,i)=>`
-      <div class="vitem">
-        <div class="vitem-info">
-          <span class="n">${v.nome} <span style="color:var(--paper-dim); font-size:0.8rem;">· ${v.ano}</span></span>
-          <span class="m mono">${v.tipo === "moto" ? "Moto" : "Carro"} · ${v.potencia} · ${v.zeroACem} · ${v.preco}</span>
-        </div>
-        <div class="vitem-actions">
-          <button class="btn btn-ghost" onclick="editarVeiculo(${i})">Editar</button>
-          <button class="btn btn-danger" onclick="removerVeiculo(${i})">Remover</button>
-        </div>
+function render(){
+  const lista = document.getElementById("lista");
+  document.getElementById("vazio").style.display = veiculos.length? "none":"block";
+  lista.innerHTML = veiculos.map(v=>`
+    <div class="item">
+      <img class="thumb" src="${v.imagem}" onerror="this.style.visibility='hidden'">
+      <div class="info">
+        <div class="b">${v.marca} · ${v.tipo==="moto"?"Moto":"Carro"}</div>
+        <h3>${v.modelo}</h3>
+        <div class="meta">${v.ano} · ${fmtKm(v.km)} · ${v.cambio}</div>
       </div>
-    `).join("");
+      <span class="price">${fmtPreco(v.preco)}</span>
+      ${v.destaque?'<span class="tag d">Destaque</span>':'<span class="tag">—</span>'}
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost mini" onclick="editar(${v.id})">Editar</button>
+        <button class="btn ghost mini" onclick="remover(${v.id})" style="border-color:#5a2530;color:var(--red-soft)">Excluir</button>
+      </div>
+    </div>`).join("");
+}
+
+/* Form */
+function novo(){
+  document.getElementById("formTitle").textContent="Novo veículo";
+  ["f_id","f_marca","f_modelo","f_ano","f_preco","f_km","f_cambio","f_combustivel","f_cor","f_imagem","f_descricao"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("f_tipo").value="carro";
+  document.getElementById("f_destaque").checked=false;
+  document.getElementById("modal").classList.add("open");
+}
+function editar(id){
+  const v = veiculos.find(x=>x.id===id); if(!v) return;
+  document.getElementById("formTitle").textContent="Editar veículo";
+  document.getElementById("f_id").value=v.id;
+  document.getElementById("f_tipo").value=v.tipo;
+  document.getElementById("f_marca").value=v.marca;
+  document.getElementById("f_modelo").value=v.modelo;
+  document.getElementById("f_ano").value=v.ano;
+  document.getElementById("f_preco").value=v.preco;
+  document.getElementById("f_km").value=v.km;
+  document.getElementById("f_cambio").value=v.cambio;
+  document.getElementById("f_combustivel").value=v.combustivel;
+  document.getElementById("f_cor").value=v.cor;
+  document.getElementById("f_imagem").value=v.imagem;
+  document.getElementById("f_descricao").value=v.descricao;
+  document.getElementById("f_destaque").checked=!!v.destaque;
+  document.getElementById("modal").classList.add("open");
+}
+function fecharForm(){ document.getElementById("modal").classList.remove("open"); }
+
+function salvar(){
+  const marca=document.getElementById("f_marca").value.trim();
+  const modelo=document.getElementById("f_modelo").value.trim();
+  if(!marca||!modelo){ alert("Preencha ao menos marca e modelo."); return; }
+  const obj={
+    tipo:document.getElementById("f_tipo").value,
+    marca, modelo,
+    ano:+document.getElementById("f_ano").value||0,
+    preco:+document.getElementById("f_preco").value||0,
+    km:+document.getElementById("f_km").value||0,
+    cambio:document.getElementById("f_cambio").value.trim(),
+    combustivel:document.getElementById("f_combustivel").value.trim(),
+    cor:document.getElementById("f_cor").value.trim(),
+    imagem:document.getElementById("f_imagem").value.trim(),
+    descricao:document.getElementById("f_descricao").value.trim(),
+    destaque:document.getElementById("f_destaque").checked
+  };
+  const idAtual=document.getElementById("f_id").value;
+  if(idAtual){
+    const i=veiculos.findIndex(x=>x.id===+idAtual);
+    obj.id=+idAtual; veiculos[i]=obj;
+  }else{
+    obj.id = veiculos.length? Math.max(...veiculos.map(x=>x.id))+1 : 1;
+    veiculos.push(obj);
   }
+  persistir(); render(); fecharForm();
+}
+function remover(id){
+  if(!confirm("Excluir este veículo?")) return;
+  veiculos = veiculos.filter(x=>x.id!==id);
+  persistir(); render();
+}
 
-  function limparForm(){
-    ["f-nome","f-ano","f-potencia","f-zero","f-categoria","f-preco","f-foto"].forEach(id=>document.getElementById(id).value = "");
-    document.getElementById("f-tipo").value = "carro";
-    document.getElementById("edit-index").value = "-1";
-    document.getElementById("form-title").textContent = "Adicionar veículo";
-    document.getElementById("cancel-edit").style.display = "none";
-  }
+/* Exportar / importar vehicles.json */
+function exportar(){
+  const blob = new Blob([JSON.stringify({veiculos}, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "vehicles.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importarJson(){ document.getElementById("fileInput").click(); }
+document.getElementById("fileInput").onchange = e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload = ()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      veiculos = data.veiculos || [];
+      persistir(); render();
+      alert("Importado com sucesso!");
+    }catch(err){ alert("Arquivo inválido."); }
+  };
+  reader.readAsText(file);
+  e.target.value="";
+};
 
-  function salvarVeiculo(){
-    const nome = document.getElementById("f-nome").value.trim();
-    if(!nome){ alert("Preencha ao menos o nome do modelo."); return; }
+document.getElementById("modal").onclick = e=>{ if(e.target.id==="modal") fecharForm(); };
 
-    const v = {
-      tipo: document.getElementById("f-tipo").value,
-      nome: nome,
-      ano: document.getElementById("f-ano").value.trim(),
-      potencia: document.getElementById("f-potencia").value.trim(),
-      zeroACem: document.getElementById("f-zero").value.trim(),
-      categoria: document.getElementById("f-categoria").value.trim(),
-      preco: document.getElementById("f-preco").value.trim() || "Consulte",
-      foto: document.getElementById("f-foto").value.trim()
-    };
-
-    const idx = parseInt(document.getElementById("edit-index").value, 10);
-    if(idx >= 0){ veiculos[idx] = v; } else { veiculos.push(v); }
-
-    salvarRascunho();
-    renderLista();
-    limparForm();
-  }
-
-  function editarVeiculo(i){
-    const v = veiculos[i];
-    document.getElementById("f-tipo").value = v.tipo;
-    document.getElementById("f-nome").value = v.nome;
-    document.getElementById("f-ano").value = v.ano;
-    document.getElementById("f-potencia").value = v.potencia;
-    document.getElementById("f-zero").value = v.zeroACem;
-    document.getElementById("f-categoria").value = v.categoria;
-    document.getElementById("f-preco").value = v.preco;
-    document.getElementById("f-foto").value = v.foto;
-    document.getElementById("edit-index").value = i;
-    document.getElementById("form-title").textContent = "Editar veículo";
-    document.getElementById("cancel-edit").style.display = "inline-block";
-    window.scrollTo({ top:0, behavior:"smooth" });
-  }
-
-  function cancelarEdicao(){ limparForm(); }
-
-  function removerVeiculo(i){
-    if(!confirm(`Remover "${veiculos[i].nome}" da lista?`)) return;
-    veiculos.splice(i,1);
-    salvarRascunho();
-    renderLista();
-  }
-
-  function baixarJSON(){
-    const blob = new Blob([JSON.stringify(veiculos, null, 2)], { type:"application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "vehicles.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // Mantém login na sessão do navegador (some ao fechar a aba)
-  if(sessionStorage.getItem("zanin_admin_ok") === "1"){ mostrarAdmin(); }
+/* Mantém logado durante a sessão do navegador */
+if(sessionStorage.getItem(SESSAO)==="1") abrirApp();
 </script>
-
 </body>
 </html>
